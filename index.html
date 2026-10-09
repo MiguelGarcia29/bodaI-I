@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isabel & Ismael - Nuestra Boda | 10.10.2028</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#fdfbf7',
+                        'cream-dark': '#f4eee1',
+                        sage: '#8b9b82',
+                        'sage-light': '#dce3d8',
+                        'sage-dark': '#5e6c56',
+                        gold: '#c5a059',
+                        'gold-light': '#e5cb93',
+                        'slate-custom': '#2c3e50',
+                        'warm-gray': '#6b655f'
+                    },
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                        cursive: ['"Great Vibes"', 'cursive'],
+                        sans: ['"Montserrat"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom Styles -->
+    <style>
+        body {
+            background-color: #fdfbf7;
+            color: #2c3e50;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism elements */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(197, 160, 89, 0.25);
+        }
+
+        .glass-card-dark {
+            background: rgba(44, 62, 80, 0.75);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(197, 160, 89, 0.3);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #fdfbf7;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c5a059;
+            border-radius: 4px;
+        }
+
+        /* Gold Gradient Text */
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #c5a059 0%, #e5cb93 50%, #b08940 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Subtle Pulse Effect for Audio Button */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.15); opacity: 0.4; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+        .animate-pulse-ring {
+            animation: pulse-ring 2.5s infinite ease-in-out;
+        }
+
+        /* Falling petals canvas positioning */
+        #petalsCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        /* Custom Modal Styling */
+        .modal-active {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen text-slate-custom selection:bg-gold-light selection:text-slate-custom">
+
+    <!-- HTML5 Canvas for Petals Animation -->
+    <canvas id="petalsCanvas"></canvas>
+
+    <!-- Floating Audio Control Button -->
+    <div class="fixed bottom-6 right-6 z-50 flex items-center space-x-2">
+        <div id="musicToast" class="hidden md:flex items-center bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full text-xs text-slate-custom shadow-lg border border-gold/30 transition-all duration-300">
+            <span id="musicStatusText">Música de ambiente</span>
+        </div>
+        <button id="musicToggle" aria-label="Reproducir música" class="relative group bg-gold hover:bg-gold-light text-white p-4 rounded-full shadow-2xl transition-all duration-300 transform hover:scale-110 focus:outline-none flex items-center justify-center">
+            <span class="absolute inset-0 rounded-full bg-gold/50 animate-pulse-ring -z-10"></span>
+            <i id="musicIcon" class="fas fa-music text-lg"></i>
+        </button>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="sticky top-0 z-40 bg-cream/90 backdrop-blur-md border-b border-gold/20 shadow-sm transition-all duration-300">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="#" class="font-cursive text-2xl md:text-3xl font-bold text-gold">Isabel & Ismael</a>
+            <div class="hidden md:flex space-x-6 text-sm font-medium tracking-wide text-slate-custom">
+                <a href="#inicio" class="hover:text-gold transition-colors">Inicio</a>
+                <a href="#historia" class="hover:text-gold transition-colors">Nuestra Historia</a>
+                <a href="#programa" class="hover:text-gold transition-colors">Programa</a>
+                <a href="#detalles" class="hover:text-gold transition-colors">Información</a>
+                <a href="#galeria" class="hover:text-gold transition-colors">Galería</a>
+                <a href="#rsvp" class="hover:text-gold transition-colors">RSVP</a>
+            </div>
+            <a href="#rsvp" class="bg-gold hover:bg-gold-light text-white text-xs md:text-sm px-4 py-2 rounded-full font-semibold transition-all duration-300 shadow-md transform hover:-translate-y-0.5">
+                Confirmar
+            </a>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section id="inicio" class="relative min-h-[90vh] flex items-center justify-center text-center px-4 py-20 bg-cover bg-center overflow-hidden" style="background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1920&auto=format&fit=crop');">
+        <!-- Soft Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-b from-slate-custom/70 via-slate-custom/60 to-cream"></div>
+
+        <div class="relative z-10 max-w-4xl mx-auto text-white space-y-6">
+            <p class="font-sans uppercase tracking-[0.3em] text-sm md:text-base text-gold-light font-light">
+                ¡Nos Casamos!
+            </p>
+            
+            <h1 class="font-cursive text-6xl sm:text-7xl md:text-9xl text-white drop-shadow-md leading-tight">
+                Isabel <span class="font-serif italic font-normal text-gold-light">&</span> Ismael
+            </h1>
+            
+            <div class="flex items-center justify-center space-x-4 my-4">
+                <div class="h-[1px] w-12 md:w-20 bg-gold-light"></div>
+                <p class="font-serif text-2xl md:text-3xl tracking-widest text-cream font-light">
+                    10 DE OCTUBRE DE 2028
+                </p>
+                <div class="h-[1px] w-12 md:w-20 bg-gold-light"></div>
+            </div>
+
+            <p class="font-sans text-xs md:text-sm uppercase tracking-widest text-slate-200">
+                Sevilla, España
+            </p>
+
+            <!-- Countdown Timer Container -->
+            <div class="pt-8">
+                <p class="text-xs uppercase tracking-widest text-gold-light mb-4 font-medium">Faltan únicamente</p>
+                <div id="countdown" class="grid grid-cols-4 gap-2 sm:gap-4 max-w-lg mx-auto">
+                    <div class="glass-card-dark p-3 md:p-4 rounded-xl border border-gold/30">
+                        <span id="days" class="block font-serif text-2xl sm:text-4xl md:text-5xl font-bold text-gold-light">00</span>
+                        <span class="text-[10px] sm:text-xs uppercase tracking-widest text-slate-300">Días</span>
+                    </div>
+                    <div class="glass-card-dark p-3 md:p-4 rounded-xl border border-gold/30">
+                        <span id="hours" class="block font-serif text-2xl sm:text-4xl md:text-5xl font-bold text-gold-light">00</span>
+                        <span class="text-[10px] sm:text-xs uppercase tracking-widest text-slate-300">Horas</span>
+                    </div>
+                    <div class="glass-card-dark p-3 md:p-4 rounded-xl border border-gold/30">
+                        <span id="minutes" class="block font-serif text-2xl sm:text-4xl md:text-5xl font-bold text-gold-light">00</span>
+                        <span class="text-[10px] sm:text-xs uppercase tracking-widest text-slate-300">Min.</span>
+                    </div>
+                    <div class="glass-card-dark p-3 md:p-4 rounded-xl border border-gold/30">
+                        <span id="seconds" class="block font-serif text-2xl sm:text-4xl md:text-5xl font-bold text-gold-light">00</span>
+                        <span class="text-[10px] sm:text-xs uppercase tracking-widest text-slate-300">Seg.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll Down Arrow -->
+        <a href="#historia" aria-label="Ir a Nuestra Historia" class="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-white/70 hover:text-white transition-colors animate-bounce">
+            <i class="fas fa-chevron-down text-2xl"></i>
+        </a>
+    </section>
+
+    <!-- NUESTRA HISTORIA / BIENVENIDA -->
+    <section id="historia" class="py-20 px-4 max-w-4xl mx-auto text-center">
+        <div class="space-y-6">
+            <div class="inline-block text-gold text-2xl mb-2">
+                <i class="fas fa-heart font-light"></i>
+            </div>
+            <h2 class="font-serif text-4xl md:text-5xl font-semibold text-slate-custom">Nuestra Historia</h2>
+            <div class="w-16 h-[2px] bg-gold mx-auto my-4"></div>
+            
+            <p class="font-serif italic text-xl md:text-2xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
+                "Hay momentos en la vida que son inolvidables, y compartirlos con las personas que más queremos los hace infinitamente más especiales."
+            </p>
+            
+            <p class="text-slate-600 font-light leading-relaxed max-w-2xl mx-auto text-sm md:text-base pt-4">
+                Tras años caminando juntos, riendo, descubriendo el mundo y construyendo nuestro hogar, hemos decidido dar el paso más importante de nuestras vidas. Queremos celebrar el amor, la amistad y el futuro en un día lleno de magia, buena música y rodeados de todos vosotros.
+            </p>
+
+            <div class="pt-8">
+                <span class="font-cursive text-4xl text-gold">Isabel & Ismael</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROGRAMA Y UBICACIÓN -->
+    <section id="programa" class="py-20 bg-cream-dark/50 border-y border-gold/10">
+        <div class="max-w-5xl mx-auto px-4">
+            <div class="text-center mb-16 space-y-3">
+                <span class="text-xs uppercase tracking-[0.2em] text-gold font-semibold">El Gran Día</span>
+                <h2 class="font-serif text-4xl md:text-5xl font-semibold text-slate-custom">Programa & Ubicación</h2>
+                <div class="w-16 h-[2px] bg-gold mx-auto"></div>
+            </div>
+
+            <!-- Timeline Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16">
+                
+                <!-- Event 1 -->
+                <div class="glass-card p-6 rounded-2xl text-center space-y-3 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="w-14 h-14 mx-auto bg-sage-light/60 rounded-full flex items-center justify-center text-sage-dark text-xl mb-2">
+                        <i class="fas fa-church"></i>
+                    </div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-gold">12:30 PM</span>
+                    <h3 class="font-serif text-2xl font-semibold text-slate-custom">La Ceremonia</h3>
+                    <p class="text-xs text-slate-600 font-light">Promesas, anillos y lágrimas de emoción en los jardines exteriores.</p>
+                </div>
+
+                <!-- Event 2 -->
+                <div class="glass-card p-6 rounded-2xl text-center space-y-3 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="w-14 h-14 mx-auto bg-sage-light/60 rounded-full flex items-center justify-center text-sage-dark text-xl mb-2">
+                        <i class="fas fa-wine-glass-alt"></i>
+                    </div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-gold">14:00 PM</span>
+                    <h3 class="font-serif text-2xl font-semibold text-slate-custom">El Cóctel</h3>
+                    <p class="text-xs text-slate-600 font-light">Aperitivos, jamón, música en directo y los primeros brindis.</p>
+                </div>
+
+                <!-- Event 3 -->
+                <div class="glass-card p-6 rounded-2xl text-center space-y-3 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="w-14 h-14 mx-auto bg-sage-light/60 rounded-full flex items-center justify-center text-sage-dark text-xl mb-2">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-gold">15:30 PM</span>
+                    <h3 class="font-serif text-2xl font-semibold text-slate-custom">El Banquete</h3>
+                    <p class="text-xs text-slate-600 font-light">Menú especial preparado con cariño en el gran salón de la finca.</p>
+                </div>
+
+                <!-- Event 4 -->
+                <div class="glass-card p-6 rounded-2xl text-center space-y-3 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="w-14 h-14 mx-auto bg-sage-light/60 rounded-full flex items-center justify-center text-sage-dark text-xl mb-2">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-gold">18:00 PM</span>
+                    <h3 class="font-serif text-2xl font-semibold text-slate-custom">La Fiesta</h3>
+                    <p class="text-xs text-slate-600 font-light">Baile nupcial, barra libre, DJ y diversión hasta que el cuerpo aguante.</p>
+                </div>
+
+            </div>
+
+            <!-- Venue Card & Location Map Details -->
+            <div class="glass-card rounded-3xl overflow-hidden shadow-lg border border-gold/20 grid grid-cols-1 md:grid-cols-2">
+                <div class="p-8 md:p-12 flex flex-col justify-between space-y-6">
+                    <div>
+                        <span class="text-xs font-semibold uppercase tracking-widest text-gold block mb-1">Lugar del Evento</span>
+                        <h3 class="font-serif text-3xl md:text-4xl font-bold text-slate-custom mb-3">Hacienda / Jardines de San Juan</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                            Carretera de la Sierra, Km 4, 41000 Sevilla, España. Un espacio idílico rodeado de arboledas y fuentes.
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-3 pt-4">
+                        <!-- Google Maps Link -->
+                        <a href="https://maps.google.com/?q=Sevilla" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center bg-slate-custom hover:bg-slate-800 text-white text-xs font-semibold px-5 py-3 rounded-xl transition-all duration-300 shadow-md">
+                            <i class="fas fa-map-marker-alt mr-2 text-gold"></i> Ver en Google Maps
+                        </a>
+                        
+                        <!-- Add to Google Calendar Link -->
+                        <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Boda+Isabel+%26+Ismael&dates=20281010T123000Z/20281010T230000Z&details=%C2%A1Acomp%C3%A1%C3%B1anos+en+nuestra+boda!&location=Jardines+de+San+Juan,+Sevilla" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center bg-gold hover:bg-gold-light text-white text-xs font-semibold px-5 py-3 rounded-xl transition-all duration-300 shadow-md">
+                            <i class="far fa-calendar-plus mr-2"></i> Añadir a Google Calendar
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Venue Photo -->
+                <div class="h-64 md:h-auto bg-cover bg-center min-h-[280px]" style="background-image: url('https://images.unsplash.com/photo-1545232979-fbf59232075a?q=80&w=1000&auto=format&fit=crop');">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DRESS CODE & INFORMACIÓN ÚTIL -->
+    <section id="detalles" class="py-20 max-w-5xl mx-auto px-4">
+        <div class="text-center mb-16 space-y-3">
+            <span class="text-xs uppercase tracking-[0.2em] text-gold font-semibold">Detalles Importantes</span>
+            <h2 class="font-serif text-4xl md:text-5xl font-semibold text-slate-custom">Información Útil</h2>
+            <div class="w-16 h-[2px] bg-gold mx-auto"></div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            <!-- Dress Code Card -->
+            <div class="glass-card p-8 rounded-2xl text-center space-y-4 border border-gold/20 shadow-sm flex flex-col justify-between">
+                <div class="space-y-4">
+                    <div class="w-12 h-12 bg-cream-dark rounded-full flex items-center justify-center text-gold mx-auto text-xl">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3 class="font-serif text-2xl font-semibold text-slate-custom">Dress Code</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        <strong>Formal / Elegante</strong>. Queremos que os sintáis guapos y cómodos para celebrar y bailar toda la noche.
+                    </p>
+                </div>
+                <div class="text-xs text-gold font-medium italic pt-4 border-t border-gold/10">
+                    Traje oscuro & Vestido de fiesta
+                </div>
+            </div>
+
+            <!-- Autobús Card -->
+            <div class="glass-card p-8 rounded-2xl text-center space-y-4 border border-gold/20 shadow-sm flex flex-col justify-between">
+                <div class="space-y-4">
+                    <div class="w-12 h-12 bg-cream-dark rounded-full flex items-center justify-center text-gold mx-auto text-xl">
+                        <i class="fas fa-bus"></i>
+                    </div>
+                    <h3 class="font-serif text-2xl font-semibold text-slate-custom">Autobús</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Pondremos a vuestra disposición servicio de transporte ida y vuelta desde el centro de Sevilla para mayor comodidad.
+                    </p>
+                </div>
+                <div class="text-xs text-gold font-medium italic pt-4 border-t border-gold/10">
+                    Salida: 11:30 AM | Regreso: 00:00 & 03:00 AM
+                </div>
+            </div>
+
+            <!-- Regalos & IBAN Card -->
+            <div class="glass-card p-8 rounded-2xl text-center space-y-4 border border-gold/20 shadow-sm flex flex-col justify-between">
+                <div class="space-y-4">
+                    <div class="w-12 h-12 bg-cream-dark rounded-full flex items-center justify-center text-gold mx-auto text-xl">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <h3 class="font-serif text-2xl font-semibold text-slate-custom">Regalos</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        El mejor regalo es vuestra presencia. Pero si queréis contribuir a nuestra luna de miel, podéis hacerlo aquí:
+                    </p>
+                </div>
+
+                <div class="pt-2">
+                    <div class="bg-white/80 p-3 rounded-lg border border-gold/30 text-[11px] font-mono text-slate-700 tracking-wider mb-2 select-all break-all" id="ibanNumber">
+                        ES12 3456 7890 1234 5678 9012
+                    </div>
+                    <button onclick="copyIBAN()" class="w-full bg-slate-custom hover:bg-slate-800 text-white text-xs font-semibold py-2 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2">
+                        <i class="far fa-copy"></i>
+                        <span>Copiar IBAN</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- GALERÍA DE FOTOS -->
+    <section id="galeria" class="py-20 bg-cream-dark/40 border-t border-gold/10">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-16 space-y-3">
+                <span class="text-xs uppercase tracking-[0.2em] text-gold font-semibold">Momentos</span>
+                <h2 class="font-serif text-4xl md:text-5xl font-semibold text-slate-custom">Galería de Recuerdos</h2>
+                <div class="w-16 h-[2px] bg-gold mx-auto"></div>
+            </div>
+
+            <!-- Photos Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                
+                <div class="relative group overflow-hidden rounded-2xl shadow-md cursor-pointer aspect-square" onclick="openLightbox('https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=1200')">
+                    <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=600" alt="Boda 1" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-slate-custom/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <i class="fas fa-search-plus text-white text-2xl"></i>
+                    </div>
+                </div>
+
+                <div class="relative group overflow-hidden rounded-2xl shadow-md cursor-pointer aspect-square" onclick="openLightbox('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=1200')">
+                    <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=600" alt="Boda 2" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-slate-custom/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <i class="fas fa-search-plus text-white text-2xl"></i>
+                    </div>
+                </div>
+
+                <div class="relative group overflow-hidden rounded-2xl shadow-md cursor-pointer aspect-square" onclick="openLightbox('https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=1200')">
+                    <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=600" alt="Boda 3" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-slate-custom/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <i class="fas fa-search-plus text-white text-2xl"></i>
+                    </div>
+                </div>
+
+                <div class="relative group overflow-hidden rounded-2xl shadow-md cursor-pointer aspect-square" onclick="openLightbox('https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?q=80&w=1200')">
+                    <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?q=80&w=600" alt="Boda 4" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-slate-custom/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <i class="fas fa-search-plus text-white text-2xl"></i>
+                    </div>
+                </div>
+
+                <div class="relative group overflow-hidden rounded-2xl shadow-md cursor-pointer aspect-square" onclick="openLightbox('https://images.unsplash.com/photo-1522673607200-164d1b6ce486?q=80&w=1200')">
+                    <img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?q=80&w=600" alt="Boda 5" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-slate-custom/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <i class="fas fa-search-plus text-white text-2xl"></i>
+                    </div>
+                </div>
+
+                <div class="relative group overflow-hidden rounded-2xl shadow-md cursor-pointer aspect-square" onclick="openLightbox('https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200')">
+                    <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=600" alt="Boda 6" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-slate-custom/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <i class="fas fa-search-plus text-white text-2xl"></i>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- LIGHTBOX MODAL FOR GALLERY -->
+    <div id="lightbox" class="fixed inset-0 z-50 bg-slate-custom/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <button onclick="closeLightbox()" class="absolute top-6 right-6 text-white hover:text-gold text-3xl focus:outline-none">
+            <i class="fas fa-times"></i>
+        </button>
+        <img id="lightboxImg" src="" alt="Vista ampliada" class="max-w-full max-h-[85vh] rounded-xl shadow-2xl object-contain">
+    </div>
+
+    <!-- FORMULARIO RSVP (CONFIRMACIÓN DE ASISTENCIA) -->
+    <section id="rsvp" class="py-20 max-w-3xl mx-auto px-4">
+        <div class="glass-card p-8 md:p-12 rounded-3xl shadow-2xl border border-gold/30 relative overflow-hidden">
+            <div class="text-center mb-10 space-y-3">
+                <span class="text-xs uppercase tracking-[0.2em] text-gold font-semibold">¿Nos Acompañas?</span>
+                <h2 class="font-serif text-4xl md:text-5xl font-semibold text-slate-custom">Confirmación de Asistencia</h2>
+                <div class="w-16 h-[2px] bg-gold mx-auto"></div>
+                <p class="text-xs text-slate-600">Rogamos confirmar asistencia antes del 10 de Agosto de 2028</p>
+            </div>
+
+            <!-- Hidden target iframe for silent Google Form submission without reload -->
+            <iframe name="hidden_iframe" id="hidden_iframe" class="hidden"></iframe>
+
+            <!-- 
+              =============================================================================================
+              INSTRUCCIONES PARA CONECTAR CON GOOGLE FORMS:
+              1. Crea un formulario en Google Forms.
+              2. Sustituye la URL del atributo 'action' de abajo por la de tu formulario:
+                 https://docs.google.com/forms/d/e/TU_ID_DE_FORMULARIO/formResponse
+              3. Para cada campo de entrada, sustituye 'entry.XXXXXX' por los identificadores reales de Google Forms
+                 (Obtén los 'entry.ID' inspeccionando el formulario público de Google Forms o la vista previa).
+              =============================================================================================
+            -->
+            <form id="rsvpForm" action="https://docs.google.com/forms/d/e/1FAIpQLSc-EXAMPLE-FORM-ID/formResponse" method="POST" target="hidden_iframe" onsubmit="handleFormSubmit(event)" class="space-y-6">
+                
+                <!-- Nombre y Apellidos -->
+                <div>
+                    <label for="entry_nombre" class="block text-xs font-semibold uppercase tracking-wider text-slate-custom mb-2">
+                        Nombre y Apellidos *
+                    </label>
+                    <input type="text" id="entry_nombre" name="entry.1000001" required placeholder="Ej. Lucía Gómez Fernández" class="w-full px-4 py-3 rounded-xl border border-gold/30 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition-all text-sm bg-white/90">
+                </div>
+
+                <!-- ¿Asistirás? -->
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-custom mb-2">
+                        ¿Asistirás al evento? *
+                    </label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <label class="flex items-center p-3 rounded-xl border border-gold/30 bg-white/90 cursor-pointer hover:border-gold transition-colors">
+                            <input type="radio" name="entry.1000002" value="Sí, asistiré con alegría" required checked class="text-gold focus:ring-gold h-4 w-4">
+                            <span class="ml-3 text-sm text-slate-700 font-medium">¡Sí, asistiré con alegría!</span>
+                        </label>
+                        <label class="flex items-center p-3 rounded-xl border border-gold/30 bg-white/90 cursor-pointer hover:border-gold transition-colors">
+                            <input type="radio" name="entry.1000002" value="Lamentablemente no podré asistir" class="text-gold focus:ring-gold h-4 w-4">
+                            <span class="ml-3 text-sm text-slate-700 font-medium">Lamentablemente no podré</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Número de acompañantes -->
+                <div>
+                    <label for="entry_acompanantes" class="block text-xs font-semibold uppercase tracking-wider text-slate-custom mb-2">
+                        Número de acompañantes
+                    </label>
+                    <select id="entry_acompanantes" name="entry.1000003" class="w-full px-4 py-3 rounded-xl border border-gold/30 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition-all text-sm bg-white/90">
+                        <option value="0">Voy solo / sola</option>
+                        <option value="1">+1 Acompañante</option>
+                        <option value="2">+2 Acompañantes</option>
+                        <option value="3">+3 Acompañantes</option>
+                    </select>
+                </div>
+
+                <!-- Intolerancias / Dietas Especiales -->
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-custom mb-2">
+                        Intolerancias alimentarias / Alergias / Dietas
+                    </label>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        <label class="flex items-center p-2 rounded-lg bg-white/80 border border-gold/20 text-xs">
+                            <input type="checkbox" name="entry.1000004" value="Celíaco" class="rounded text-gold focus:ring-gold h-4 w-4">
+                            <span class="ml-2 text-slate-700">Celíaco/a</span>
+                        </label>
+                        <label class="flex items-center p-2 rounded-lg bg-white/80 border border-gold/20 text-xs">
+                            <input type="checkbox" name="entry.1000004" value="Vegetariano" class="rounded text-gold focus:ring-gold h-4 w-4">
+                            <span class="ml-2 text-slate-700">Vegetariano/a</span>
+                        </label>
+                        <label class="flex items-center p-2 rounded-lg bg-white/80 border border-gold/20 text-xs">
+                            <input type="checkbox" name="entry.1000004" value="Vegano" class="rounded text-gold focus:ring-gold h-4 w-4">
+                            <span class="ml-2 text-slate-700">Vegano/a</span>
+                        </label>
+                        <label class="flex items-center p-2 rounded-lg bg-white/80 border border-gold/20 text-xs">
+                            <input type="checkbox" name="entry.1000004" value="Sin Lactosa" class="rounded text-gold focus:ring-gold h-4 w-4">
+                            <span class="ml-2 text-slate-700">Sin Lactosa</span>
+                        </label>
+                        <label class="flex items-center p-2 rounded-lg bg-white/80 border border-gold/20 text-xs">
+                            <input type="checkbox" name="entry.1000004" value="Frutos Secos" class="rounded text-gold focus:ring-gold h-4 w-4">
+                            <span class="ml-2 text-slate-700">Frutos Secos</span>
+                        </label>
+                        <label class="flex items-center p-2 rounded-lg bg-white/80 border border-gold/20 text-xs">
+                            <input type="checkbox" name="entry.1000004" value="Embarazada" class="rounded text-gold focus:ring-gold h-4 w-4">
+                            <span class="ml-2 text-slate-700">Embarazada</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Canción Recomendada -->
+                <div>
+                    <label for="entry_cancion" class="block text-xs font-semibold uppercase tracking-wider text-slate-custom mb-2">
+                        Canción que no puede faltar en el baile
+                    </label>
+                    <input type="text" id="entry_cancion" name="entry.1000005" placeholder="Ej. Queen - Don't Stop Me Now" class="w-full px-4 py-3 rounded-xl border border-gold/30 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition-all text-sm bg-white/90">
+                </div>
+
+                <!-- Botón de Envío -->
+                <div class="pt-4 text-center">
+                    <button type="submit" id="submitBtn" class="w-full md:w-auto bg-gold hover:bg-gold-light text-white font-semibold text-base px-10 py-4 rounded-full shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
+                        <i class="fas fa-paper-plane mr-2"></i> Confirmar Asistencia
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="py-12 bg-slate-custom text-white text-center border-t border-gold/30">
+        <div class="max-w-4xl mx-auto px-4 space-y-4">
+            <h3 class="font-cursive text-4xl text-gold">Isabel & Ismael</h3>
+            <p class="text-xs uppercase tracking-widest text-slate-300">10 de Octubre de 2028 • Sevilla</p>
+            <p class="text-xs text-slate-400 font-light pt-4">
+                Diseñado con amor para celebrar nuestra unión. ¡Os esperamos!
+            </p>
+        </div>
+    </footer>
+
+    <!-- GENERAL NOTIFICATION MODAL -->
+    <div id="customModal" class="fixed inset-0 z-50 bg-slate-custom/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="glass-card p-8 rounded-3xl max-w-md w-full text-center space-y-4 shadow-2xl border border-gold/40 transform transition-all duration-300">
+            <div id="modalIcon" class="w-16 h-16 bg-gold-light/30 rounded-full flex items-center justify-center text-gold mx-auto text-3xl">
+                <i class="fas fa-check"></i>
+            </div>
+            <h3 id="modalTitle" class="font-serif text-3xl font-bold text-slate-custom">¡Gracias!</h3>
+            <p id="modalMessage" class="text-xs md:text-sm text-slate-600 leading-relaxed">
+                Hemos recibido tu respuesta correctamente.
+            </p>
+            <button onclick="closeModal()" class="bg-gold hover:bg-gold-light text-white text-xs uppercase tracking-wider font-semibold px-8 py-3 rounded-full transition-all duration-300">
+                Aceptar
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Canvas Petals Animation
+        (function initPetals() {
+            const canvas = document.getElementById('petalsCanvas');
+            const ctx = canvas.getContext('2d');
+            let width = canvas.width = window.innerWidth;
+            let height = canvas.height = window.innerHeight;
+
+            window.addEventListener('resize', () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            });
+
+            const petals = [];
+            const petalCount = 28;
+            const colors = ['rgba(229, 203, 147, 0.4)', 'rgba(139, 155, 130, 0.35)', 'rgba(253, 251, 247, 0.5)'];
+
+            for (let i = 0; i < petalCount; i++) {
+                petals.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    size: Math.random() * 8 + 6,
+                    speedY: Math.random() * 0.8 + 0.4,
+                    speedX: Math.random() * 0.6 - 0.3,
+                    angle: Math.random() * 360,
+                    spin: Math.random() * 0.02 - 0.01,
+                    color: colors[Math.floor(Math.random() * colors.length)]
+                });
+            }
+
+            function drawPetal(p) {
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.angle);
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.ellipse(0, 0, p.size, p.size / 2, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                petals.forEach(p => {
+                    p.y += p.speedY;
+                    p.x += Math.sin(p.y / 30) * 0.5 + p.speedX;
+                    p.angle += p.spin;
+
+                    if (p.y > height + 20) {
+                        p.y = -20;
+                        p.x = Math.random() * width;
+                    }
+                    if (p.x > width + 20) p.x = -20;
+                    if (p.x < -20) p.x = width + 20;
+
+                    drawPetal(p);
+                });
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        })();
+
+        // Countdown Timer
+        const weddingDate = new Date('2028-10-10T12:30:00').getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = weddingDate - now;
+
+            if (distance < 0) {
+                document.getElementById('countdown').innerHTML = '<div class="col-span-4 text-2xl font-serif text-gold">¡El gran día ha llegado!</div>';
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = String(days).padStart(2, '0');
+            document.getElementById('hours').innerText = String(hours).padStart(2, '0');
+            document.getElementById('minutes').innerText = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // Web Audio Synthesizer ambient music loop
+        let audioCtx = null;
+        let isPlaying = false;
+        let synthInterval = null;
+
+        const musicToggle = document.getElementById('musicToggle');
+        const musicIcon = document.getElementById('musicIcon');
+        const musicStatusText = document.getElementById('musicStatusText');
+
+        function playAmbientSound() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            const notes = [261.63, 329.63, 392.00, 493.88, 523.25]; // C major 7th harmonic scale
+            let noteIndex = 0;
+
+            synthInterval = setInterval(() => {
+                if (!isPlaying) return;
+                try {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(notes[noteIndex % notes.length], audioCtx.currentTime);
+
+                    gain.gain.setValueAtTime(0.01, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.08, audioCtx.currentTime + 0.8);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 2.5);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 2.6);
+
+                    noteIndex++;
+                } catch (e) {
+                    console.error(e);
+                }
+            }, 1200);
+        }
+
+        musicToggle.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            if (isPlaying) {
+                musicIcon.className = 'fas fa-pause text-lg';
+                musicStatusText.innerText = 'Sonando música ambient';
+                playAmbientSound();
+            } else {
+                musicIcon.className = 'fas fa-music text-lg';
+                musicStatusText.innerText = 'Música pausada';
+                if (synthInterval) clearInterval(synthInterval);
+            }
+        });
+
+        // Lightbox Gallery Functions
+        function openLightbox(url) {
+            const lightbox = document.getElementById('lightbox');
+            const img = document.getElementById('lightboxImg');
+            img.src = url;
+            lightbox.classList.remove('hidden');
+            document.body.classList.add('modal-active');
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.add('hidden');
+            document.body.classList.remove('modal-active');
+        }
+
+        // IBAN Copy Functionality (Using document.execCommand for safe iframe execution)
+        function copyIBAN() {
+            const ibanText = document.getElementById('ibanNumber').innerText.trim();
+            const tempInput = document.createElement('textarea');
+            tempInput.value = ibanText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            
+            try {
+                document.execCommand('copy');
+                showModal('¡IBAN Copiado!', 'El número de cuenta ha sido copiado al portapapeles. ¡Muchas gracias por vuestro detalle!');
+            } catch (err) {
+                showModal('Número de Cuenta', ibanText);
+            }
+            
+            document.body.removeChild(tempInput);
+        }
+
+        // Modal functions
+        function showModal(title, message) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerText = message;
+            document.getElementById('customModal').classList.remove('hidden');
+            document.body.classList.add('modal-active');
+        }
+
+        function closeModal() {
+            document.getElementById('customModal').classList.add('hidden');
+            document.body.classList.remove('modal-active');
+        }
+
+        // Form Submit Handler
+        function handleFormSubmit(event) {
+            // Note: If configured with a real Google Form action, it submits to hidden_iframe
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Enviando...';
+
+            setTimeout(() => {
+                showModal('¡Confirmación Recibida!', 'Muchísimas gracias por confirmar. Estamos deseando compartir este día tan especial contigo.');
+                document.getElementById('rsvpForm').reset();
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i> Confirmar Asistencia';
+            }, 800);
+        }
+    </script>
+</body>
+</html>
